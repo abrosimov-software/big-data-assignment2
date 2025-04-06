@@ -21,7 +21,9 @@ services:
     # You can comment the entrypoint to run the script manually inside the container
     entrypoint: 
       - bash
-      - /app/app.sh
+      - -c
+      - |
+        find /app -type f -name '*.sh' -exec sed -i 's/\r$//' {} + && chmod +x /app/app.sh && exec bash /app/app.sh
     
   cluster-slave-1:
     image: firasj/spark-docker-cluster

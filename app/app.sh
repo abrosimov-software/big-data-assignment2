@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 # Start ssh server
 service ssh restart 
 
@@ -6,14 +8,18 @@ service ssh restart
 bash start-services.sh
 
 # Creating a virtual environment
-python3 -m venv .venv
+if [ ! -d ".venv" ]; then
+  python3 -m venv .venv
+fi
 source .venv/bin/activate
 
 # Install any packages
 pip install -r requirements.txt  
 
 # Package the virtual env.
-venv-pack -o .venv.tar.gz
+if [ ! -f ".venv.tar.gz" ]; then
+  venv-pack -o .venv.tar.gz
+fi
 
 # Collect data
 bash prepare_data.sh
