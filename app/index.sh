@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 
 # Get the input file/directory path from the command-line argument
@@ -45,40 +46,13 @@ echo "=== Step 2: Cleaning up previous output directories ==="
 hdfs dfs -rm -r -skipTrash "$HDFS_FINAL_OUTPUT" 2>/dev/null || true
 echo "Previous output directories cleaned"
 
-# Step 3: Run MapReduce pipeline
-echo "=== Step 3: Running MapReduce pipeline ==="
-echo "Starting MapReduce job to index documents..."
+cqlsh cassandra-server -f cassandra/schema.sql
 
-# Prepare Python dependencies
-echo "=== Preparing Python environment ==="
-PYTHON_ENV_ZIP="python_env.zip"
-
-if [[ ! -f "$PYTHON_ENV_ZIP" ]]; then
-    echo "Creating Python virtual environment with required dependencies..."
-    mkdir -p python_env
-    
-    # Install nltk and cassandra-driver
-    pip install nltk cassandra-driver -t python_env/
-    
-    python -m nltk.downloader punkt_tab wordnet stopwords -d python_env/nltk_data
-
-    # Package the python_env directory
-    (cd python_env && zip -r "../$PYTHON_ENV_ZIP" .)
-    rm -rf python_env
-    echo "Python environment packaged as $PYTHON_ENV_ZIP"
-else
-    echo "Found existing $PYTHON_ENV_ZIP"
-fi
-
-# Make mapper and reducer executable
-echo "Making mapper and reducer scripts executable..."
-chmod +x mapreduce/mapper1.py
-chmod +x mapreduce/reducer1.py
-
-# Run the MapReduce job
-echo "=== Running MapReduce job with Python dependencies ==="
+# Step 3: Run MapReduce job
+echo "=== Step 3: Running MapReduce job ==="
 mapred streaming \
-    -files mapreduce/mapper1.py,mapreduce/reducer1.py,config.py,$PYTHON_ENV_ZIP \
+    -files mapreduce/mapper1.py,mapreduce/reducer1.py,config.py \
+    -archives "/app/.venv.tar.gz#.venv" \
     -input "$INPUT_PATH" \
     -output "$HDFS_FINAL_OUTPUT" \
     -mapper "mapper1.py" \

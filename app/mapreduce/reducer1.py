@@ -22,15 +22,12 @@ import math
 import logging
 from typing import Dict, List, Tuple
 
-sys.path.append("./python_env.zip")
-
 from cassandra.cluster import Cluster
 from cassandra.query import BatchStatement
 from cassandra import ConsistencyLevel
 
 from config import (
     CASSANDRA_HOSTS,
-    CASSANDRA_PORT,
     CASSANDRA_KEYSPACE,
     BM25_K1,
     BM25_B
@@ -42,7 +39,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 try:
-    cluster = Cluster(CASSANDRA_HOSTS, port=CASSANDRA_PORT)
+    cluster = Cluster(CASSANDRA_HOSTS)
     session = cluster.connect(CASSANDRA_KEYSPACE)
     logger.info("Connected to Cassandra cluster")
 except Exception as e:

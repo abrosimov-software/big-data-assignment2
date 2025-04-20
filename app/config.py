@@ -17,9 +17,6 @@ DATA_COLUMNS = ['id', 'title', 'text']  # Columns to extract from parquet
 ### Cassandra Configuration ###
 CASSANDRA_HOSTS = ['cassandra-server']
 CASSANDRA_KEYSPACE = 'bm25_index'
-CASSANDRA_PORT = 7000
-CASSANDRA_REPLICATION_STRATEGY = "SimpleStrategy"
-CASSANDRA_REPLICATION_FACTOR = 1
 
 # Cassandra Tables
 
