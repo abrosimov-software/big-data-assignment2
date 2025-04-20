@@ -15,18 +15,15 @@ import re
 from collections import Counter
 from typing import List
 
-stop_words = {"a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "has", "he", "in", "is", "it", "its", "of", "on", "that", "the", "to", "was", "were", "will", "with"}
+stopwords = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
 
 def tokenize_and_normalize(text: str) -> List[str]:
     text = text.lower()
     text = re.sub(r'[^\w\s]', ' ', text).strip()
     
     tokens = text.split()
-    
-    normalized_tokens = []
-    for token in tokens:
-        if token not in stop_words and len(token) > 2:
-            normalized_tokens.append(token)
+
+    normalized_tokens = [token for token in tokens if len(token) > 2 and token not in stopwords]
     
     return normalized_tokens
 

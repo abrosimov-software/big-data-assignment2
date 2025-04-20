@@ -2,15 +2,18 @@ CREATE KEYSPACE IF NOT EXISTS bm25_index WITH REPLICATION = { 'class': 'SimpleSt
 
 USE bm25_index;
 
+DROP TABLE IF EXISTS terms;
+DROP TABLE IF EXISTS documents;
+DROP TABLE IF EXISTS term_docs;
+DROP TABLE IF EXISTS global_stats;
+
 CREATE TABLE IF NOT EXISTS terms (
     term text PRIMARY KEY,
-    doc_frequency int,
-    idf double
+    doc_frequency int
 );
 
 CREATE TABLE IF NOT EXISTS documents (
     doc_id text PRIMARY KEY,
-    title text,
     doc_length int
 );
 
@@ -18,11 +21,11 @@ CREATE TABLE IF NOT EXISTS term_docs (
     term text,
     doc_id text,
     term_frequency int,
-    bm25_score double,
     PRIMARY KEY (term, doc_id)
 );
 
 CREATE TABLE IF NOT EXISTS global_stats (
-    stat_name text PRIMARY KEY,
-    stat_value double
+    docs_num int,
+    total_doc_len int,
+    PRIMARY KEY (docs_num, total_doc_len)
 );
